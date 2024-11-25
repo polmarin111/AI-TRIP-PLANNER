@@ -1,0 +1,28 @@
+document.getElementById('trip-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const budget = document.getElementById('budget').value;
+    const activityLevel = document.getElementById('activity-level').value;
+    const destination = document.getElementById('destination').value;
+    const travelStyle = document.getElementById('travel-style').value;
+
+    const userInput = `I want a ${activityLevel}, ${travelStyle} trip to ${destination} with a budget of $${budget}. Suggest an itinerary.`;
+
+    const response = await fetch('https://api.openai.com/v1/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer YOUR_OPENAI_API_KEY`
+        },
+        body: JSON.stringify({
+            model: 'text-davinci-003',
+            prompt: userInput,
+            max_tokens: 300
+        })
+    });
+
+    const data = await response.json();
+    const itinerary = data.choices[0].text;
+
+    document.getElementById('result').innerText = `Your AI-generated trip plan: ${itinerary}`;
+});
